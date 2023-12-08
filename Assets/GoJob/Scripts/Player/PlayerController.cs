@@ -20,7 +20,19 @@ public class PlayerController : MonoBehaviour
 	private float currentSpeed;                     // 현재 플레이어의 속도
 	private float deceleration;                     // 플레이어 감속
 	private float currentAngle;
+	private float angle;
 
+
+
+	private Vector3 playerForward;
+
+
+
+	public Vector3 PlayerForward
+	{
+		set => playerForward = value;
+		get => playerForward;
+	}
 
 	private void Awake()
 	{
@@ -60,7 +72,8 @@ public class PlayerController : MonoBehaviour
 		//회전
 		if (Ypos != 0)
 		{
-			currentAngle = _rigidbody.rotation.eulerAngles.y + (Ypos * Time.deltaTime * turnSpeed);
+			currentAngle += Ypos * turnSpeed;
+			angle = _rigidbody.rotation.eulerAngles.y + (Ypos * turnSpeed);
 			if (currentAngle < 0)
 			{
 				currentAngle += 360;
@@ -70,67 +83,73 @@ public class PlayerController : MonoBehaviour
 				currentAngle -= 360;
 			}
 			transform.eulerAngles = new Vector3(_rigidbody.rotation.eulerAngles.x,
-									currentAngle,
-									_rigidbody.rotation.eulerAngles.y);
+									angle,
+									_rigidbody.rotation.eulerAngles.z);
+			Debug.Log(currentAngle);
 		}
 
 		if (xPos != 0)
 		{
-			Debug.Log(xPos);
-			Vector3 playerForward = Quaternion.Euler(0f, currentAngle, 0) * Vector3.forward;
+			//Debug.Log(xPos);
+			playerForward = Quaternion.Euler(0f, currentAngle, 0f) * Vector3.forward;
+
+			Debug.Log(Vector3.forward);
+			_rigidbody.velocity += playerForward * xPos * Time.deltaTime * acceleration;
 
 
-			if(!AccelerationLimit())
-			{
-				_rigidbody.velocity += playerForward * xPos * Time.deltaTime * acceleration;
-			}
-			
+			AccelerationLimit();
+
+
 
 		}
 
 	}
 
 	// 플레이어 속력 제한
-	private bool AccelerationLimit()
+	private void AccelerationLimit()
 	{
 
-		bool isMaxSpeed = false;
 
 		if (_rigidbody.velocity.x > maxSpeed)
 		{
 			_rigidbody.velocity = new Vector3(maxSpeed, _rigidbody.velocity.y, _rigidbody.velocity.z);
 
-			isMaxSpeed = true;
+			return;
 		}
 
 		if (_rigidbody.velocity.x < (maxSpeed * -1))
 		{
 			_rigidbody.velocity = new Vector3((maxSpeed * -1), _rigidbody.velocity.y, _rigidbody.velocity.z);
-			isMaxSpeed = true;
+			return;
 
 		}
 
 		if (_rigidbody.velocity.z > maxSpeed)
 		{
 			_rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _rigidbody.velocity.y, maxSpeed);
-			isMaxSpeed = true;
+			return;
 
 		}
 
 		if (_rigidbody.velocity.z < (maxSpeed * -1))
 		{
 			_rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _rigidbody.velocity.y, (maxSpeed * -1));
-			isMaxSpeed = true;
+			return;
 		}
 
 		//Debug.Log(_rigidbody.velocity);
-		return isMaxSpeed;
+		
 	}
 
 
 	private void PlayerSpeedDeceleration()
 	{
+
+
 		Vector3 currentVelocity = _rigidbody.velocity;
+
+		
+
 		currentVelocity -= currentVelocity * decelerationLevel * Time.deltaTime;
 		_rigidbody.velocity = currentVelocity;
 	}
