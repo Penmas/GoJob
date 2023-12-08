@@ -124,6 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7910222737402694081}
+  - component: {fileID: 4744486962162382675}
   m_Layer: 0
   m_Name: Water_Nomal
   m_TagString: Untagged
@@ -148,6 +149,27 @@ Transform:
   - {fileID: 6301396268140851309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4744486962162382675
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7389581289636713339}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.7033082, z: 1}
+  m_Center: {x: 0, y: -0.6483459, z: 0}
 --- !u!1 &9117125218339441324
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class PlayerCamera : MonoBehaviour
 		cameraPositionOffset = transform.position;
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 		CameraMove();
 	}
