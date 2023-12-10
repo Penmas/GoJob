@@ -13,23 +13,37 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float turnSpeed;
 	[SerializeField] private float aliveTime;
 
+	[Space(10)]
+	[Header("모델링")]
+	[SerializeField] private GameObject model;								// 모델링
+
+	[Space(10)]
+	[Header("현재 수치")]
+	[SerializeField] private float currentSpeed;							// 현재 속도
+	[SerializeField] private float currentAngle;							// 현재 각도
+	[SerializeField] private float currentIdleTime;							// 움직이지 않은 시간
+
+
+
 	// 컴포넌트
 	private Rigidbody _rigidbody;
 
 
 	// 수치
-	private float currentAngle;
-	private float currentIdleTime;
-
-	private Vector3 playerForward;
-	private float angle;
+	private float angle;					// 모델링이 움직인 각도
+	private float accelBlock;				// 가속 블록 속도
 
 
-	public Vector3 PlayerForward
+	private bool isForwardMoved;			//앞으로 움직이는지 판단
+
+
+	// 프로퍼티 선언
+	public float AccelBlock
 	{
-		set => playerForward = value;
-		get => playerForward;
+		set => accelBlock = value;
+		get => accelBlock;
 	}
+
 
 	private void Awake()
 	{
@@ -37,14 +51,28 @@ public class PlayerController : MonoBehaviour
 
 
 		currentAngle = transform.rotation.y;
-
+		accelBlock = 1;
 	}
 
 
 	private void Update()
 	{
+		// 시간
+		currentIdleTime += Time.deltaTime;
+
+		playerDeathTimeCheck();
+		
+		//현재 블럭 체크
+		BlockCheck();
+	}
+
+	private void FixedUpdate()
+	{
 		// 플레이어 움직임
 		PlayerMove();
+
+		// 플레이어 모델링 회전
+		ModelRotation();
 
 		// 플레이어 자동 감속
 		PlayerSpeedDeceleration();
@@ -59,20 +87,79 @@ public class PlayerController : MonoBehaviour
 	{
 		// 앞뒤 이동
 		float xPos = Input.GetAxis("Vertical");
-		float Ypos = Input.GetAxis("Horizontal");
+		float yPos = Input.GetAxis("Horizontal");
 
 
-		// 시간
-		currentIdleTime += Time.deltaTime;
-		
-		
-		//회전
-		if (Ypos != 0)
+
+		float time = Time.fixedDeltaTime;
+		//float time = Time.deltaTime;
+
+        // 이동
+		if(xPos != 0)
 		{
-			float time = Time.deltaTime;
+			if (Mathf.Abs(currentSpeed) < maxSpeed)
+			{
+				currentSpeed += xPos * time * acceleration;
 
+			}
+			else
+			{
+				if(currentSpeed < 0)
+				{
+					currentSpeed = -maxSpeed;
+				}
+				else if(currentSpeed > 0)
+				{
+					currentSpeed = maxSpeed;
+				}
+			}
+
+			if(currentSpeed > 0)
+			{
+				isForwardMoved = true;
+			}
+			else if(currentSpeed <0)
+			{
+				isForwardMoved = false;
+			}
+
+			playerInputCheck();
+		}
+      
+        transform.position += currentSpeed * transform.forward * time * accelBlock;
+
+
+
+		// 회전
+		if(yPos != 0)
+		{
+			currentAngle += yPos * turnSpeed * time;
+
+			if (currentAngle < -180)
+			{
+				currentAngle += 360;
+			}
+			else if (currentAngle > 180)
+			{
+				currentAngle -= 360;
+			}
+
+
+			transform.eulerAngles = new Vector3(transform.rotation.eulerAngles.x,
+									currentAngle,
+									transform.rotation.eulerAngles.z);
+		}
+
+
+
+
+		// 리지드바디 회전
+		/*if (Ypos != 0)
+		{
 			currentAngle += Ypos * turnSpeed * time;
+
 			angle = transform.eulerAngles.y + (Ypos * turnSpeed * time);
+			
 			if (currentAngle < -180)
 			{
 				currentAngle += 360;
@@ -90,10 +177,16 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
-
 		}
 
 
+		if (Mathf.Abs(_rigidbody.angularVelocity.y) > 10)
+		{
+			Debug.Log(_rigidbody.angularVelocity.y);
+
+		}
+
+		currentAngle += _rigidbody.angularVelocity.y;
 
 		if (xPos != 0)
 		{
@@ -106,7 +199,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-		}
+		}*/
 
 	}
 
@@ -149,16 +242,83 @@ public class PlayerController : MonoBehaviour
 	// 플레이어 감속
 	private void PlayerSpeedDeceleration()
 	{
-		Vector3 currentVelocity = _rigidbody.velocity;
+
+		if(isForwardMoved)
+		{
+			currentSpeed -= Time.fixedDeltaTime * decelerationLevel;
+
+			if(currentSpeed < 0)
+			{
+				currentSpeed = 0;
+			}
+		}
+		else
+		{
+			currentSpeed += Time.fixedDeltaTime * decelerationLevel;
+
+			if (currentSpeed > 0)
+			{
+				currentSpeed = 0;
+			}
+		}
+
+
+
+
+		// 리지드바디용
+		/*Vector3 currentVelocity = _rigidbody.velocity;
 		currentVelocity -= currentVelocity * decelerationLevel * Time.deltaTime;
-		_rigidbody.velocity = currentVelocity;
+		_rigidbody.velocity = currentVelocity;*/
+
+
+
 	}
 
 
 
+	private void ModelRotation()
+	{
+		angle -= currentSpeed * Time.fixedDeltaTime * 190f;
+		model.transform.localEulerAngles = new Vector3(0,
+												angle,
+												-90);
+	}
+
 
 	// 플레이어 시간 제한
 	private void playerDeathTimeCheck()
+	{
+		if(currentIdleTime > aliveTime)
+		{
+			Debug.Log("게임 오버");
+		}
+	}
+
+	private void playerInputCheck()
+	{
+		currentIdleTime = 0;
+	}
+
+
+	private void BlockCheck()
+	{
+		RaycastHit hit;
+
+		if(Physics.Raycast(transform.position, Vector3.up * -1, out hit, 1))
+		{
+			if (hit.collider.gameObject.CompareTag("Slide"))
+			{
+				accelBlock = 1.5f;
+			}
+			else
+			{
+				accelBlock = 1f;
+			}
+		}
+	}
+
+
+	public void GameStop()
 	{
 
 	}
