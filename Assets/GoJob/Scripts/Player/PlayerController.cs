@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,22 +11,18 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float acceleration;							// 가속
 	[SerializeField] private float decelerationLevel;                       // 감속
 	[SerializeField] private float turnSpeed;
-
+	[SerializeField] private float aliveTime;
 
 	// 컴포넌트
 	private Rigidbody _rigidbody;
 
 
 	// 수치
-	private float currentSpeed;                     // 현재 플레이어의 속도
-	private float deceleration;                     // 플레이어 감속
 	private float currentAngle;
-	private float angle;
-
-
+	private float currentIdleTime;
 
 	private Vector3 playerForward;
-
+	private float angle;
 
 
 	public Vector3 PlayerForward
@@ -44,15 +41,13 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	private void FixedUpdate()
+	private void Update()
 	{
 		// 플레이어 움직임
 		PlayerMove();
 
 		// 플레이어 자동 감속
 		PlayerSpeedDeceleration();
-
-
 
 	}
 
@@ -67,33 +62,43 @@ public class PlayerController : MonoBehaviour
 		float Ypos = Input.GetAxis("Horizontal");
 
 
-
-
+		// 시간
+		currentIdleTime += Time.deltaTime;
+		
+		
 		//회전
 		if (Ypos != 0)
 		{
-			currentAngle += Ypos * turnSpeed;
-			angle = _rigidbody.rotation.eulerAngles.y + (Ypos * turnSpeed);
-			if (currentAngle < 0)
+			float time = Time.deltaTime;
+
+			currentAngle += Ypos * turnSpeed * time;
+			angle = transform.eulerAngles.y + (Ypos * turnSpeed * time);
+			if (currentAngle < -180)
 			{
 				currentAngle += 360;
 			}
-			else if (currentAngle > 360)
+			else if (currentAngle > 180)
 			{
 				currentAngle -= 360;
 			}
+
+
 			transform.eulerAngles = new Vector3(_rigidbody.rotation.eulerAngles.x,
 									angle,
 									_rigidbody.rotation.eulerAngles.z);
-			Debug.Log(currentAngle);
+			//Debug.Log(currentAngle);
 		}
+		else
+		{
+
+		}
+
+
 
 		if (xPos != 0)
 		{
-			//Debug.Log(xPos);
 			playerForward = Quaternion.Euler(0f, currentAngle, 0f) * Vector3.forward;
 
-			Debug.Log(Vector3.forward);
 			_rigidbody.velocity += playerForward * xPos * Time.deltaTime * acceleration;
 
 
@@ -141,17 +146,20 @@ public class PlayerController : MonoBehaviour
 		
 	}
 
-
+	// 플레이어 감속
 	private void PlayerSpeedDeceleration()
 	{
-
-
 		Vector3 currentVelocity = _rigidbody.velocity;
-
-		
-
 		currentVelocity -= currentVelocity * decelerationLevel * Time.deltaTime;
 		_rigidbody.velocity = currentVelocity;
 	}
 
+
+
+
+	// 플레이어 시간 제한
+	private void playerDeathTimeCheck()
+	{
+
+	}
 }
