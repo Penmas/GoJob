@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 3462336940573719694}
   - component: {fileID: 6360766624819447834}
   m_Layer: 0
-  m_Name: Player
+  m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,15 +246,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63bbd52bec95bc2429d86dc94469532c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 3
-  acceleration: 5
-  decelerationLevel: 0.1
+  maxSpeed: 3.5
+  acceleration: 2.5
+  decelerationLevel: 0.5
   turnSpeed: 60
-  aliveTime: 0
-  model: {fileID: 0}
+  aliveTime: 3
+  model: {fileID: 4604970902746562923}
   currentSpeed: 0
   currentAngle: 0
   currentIdleTime: 0
+  gameclear:
+    m_PersistentCalls:
+      m_Calls: []
+  gameover:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!136 &3462336940573719694
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -283,5 +289,5 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 48
   m_CollisionDetection: 0

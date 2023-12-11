@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 495769858598230291}
   - component: {fileID: 3552935047866144438}
   - component: {fileID: 1633250666334397052}
+  - component: {fileID: 1794962988450765318}
   m_Layer: 0
   m_Name: Flags
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1794962988450765318
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984745307682603945}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.3847872, y: 10.285784, z: 0.67636573}
+  m_Center: {x: 0.016607895, y: 5.142892, z: 0.019167736}

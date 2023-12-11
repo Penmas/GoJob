@@ -2129,61 +2129,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 3462336940573719694, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: model
-      value: 
-      objectReference: {fileID: 3991222244798349888}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: maxSpeed
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: aliveTime
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: acceleration
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: decelerationLevel
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: gameover.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: gameover.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: gameover.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6360766624819447834, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: m_UseGravity
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6360766624819447834, guid: d52585e93e4da474090345837cabdae4,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 48
-      objectReference: {fileID: 0}
     - target: {fileID: 7953258590889051537, guid: d52585e93e4da474090345837cabdae4,
         type: 3}
       propertyPath: m_Name
@@ -2191,12 +2136,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d52585e93e4da474090345837cabdae4, type: 3}
---- !u!1 &3991222244798349888 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4604970902746562923, guid: d52585e93e4da474090345837cabdae4,
-    type: 3}
-  m_PrefabInstance: {fileID: 615743963951776555}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4117091086736400915
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
 	[Header("능력치")]
+	[SerializeField] private Vector3 respawnPosition;
 	[SerializeField] private float maxSpeed;                                // 플레이어 최고 속도
 	[SerializeField] private float acceleration;							// 가속
 	[SerializeField] private float decelerationLevel;                       // 감속
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
 
 
 	// 수치
+	private float defaultAngle;
 	private float angle;					// 모델링이 움직인 각도
 	private float accelBlock;				// 가속 블록 속도
 
@@ -51,8 +53,8 @@ public class PlayerController : MonoBehaviour
 	{
 		_rigidbody = GetComponent<Rigidbody>();
 
-
-		currentAngle = transform.rotation.y;
+		defaultAngle = transform.eulerAngles.y;
+		currentAngle = defaultAngle;
 		accelBlock = 1;
 	}
 
@@ -66,6 +68,9 @@ public class PlayerController : MonoBehaviour
 		
 		//현재 블럭 체크
 		BlockCheck();
+
+		// 현재 위치 체크
+		OutCheck();
 	}
 
 	private void FixedUpdate()
@@ -290,9 +295,14 @@ public class PlayerController : MonoBehaviour
 	// 플레이어 시간 제한
 	private void playerDeathTimeCheck()
 	{
+		if(aliveTime == 0)
+		{
+			return;
+		}
+
 		if(currentIdleTime > aliveTime)
 		{
-			Debug.Log("게임 오버");
+			GameOver();
 		}
 	}
 
@@ -326,6 +336,26 @@ public class PlayerController : MonoBehaviour
 		{
 			GameOver();
 		}
+	}
+
+
+	public void Respawn()
+	{
+		// 위치 초기화
+		transform.position = respawnPosition;
+
+		// 로테이션 초기화
+		angle = 0;
+		currentAngle = defaultAngle;
+		transform.eulerAngles = new Vector3(0, defaultAngle, 90);
+
+		// 속도 초기화
+		currentSpeed = 0;
+
+		// 리지드바디 초기화
+		_rigidbody.velocity = Vector3.zero;
+		_rigidbody.angularVelocity = Vector3.zero;
+		_rigidbody.angularDrag = 0;
 	}
 
 
