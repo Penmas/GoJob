@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GoJob/Scenes/SausageMap.unity
     guid: b38a7ea4c9c4bbe419777cb3d56f64c9
+  - enabled: 1
+    path: Assets/GoJob/Scenes/Stage.unity
+    guid: b88a1d2dd89a63444bbe5bfd71a2f072
   m_configObjects: {}
