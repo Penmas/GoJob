@@ -47,7 +47,14 @@ public class PlayerController : MonoBehaviour
 		set => accelBlock = value;
 		get => accelBlock;
 	}
-
+	public float AliveTime
+	{
+		get => aliveTime;
+	}
+	public float CurrentIdleTime
+	{
+		get => currentIdleTime;
+	}
 
 	private void Awake()
 	{
