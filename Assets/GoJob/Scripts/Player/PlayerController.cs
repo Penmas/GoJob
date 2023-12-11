@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,9 +20,12 @@ public class PlayerController : MonoBehaviour
 	[Header("현재 수치")]
 	[SerializeField] private float currentSpeed;							// 현재 속도
 	[SerializeField] private float currentAngle;							// 현재 각도
-	[SerializeField] private float currentIdleTime;							// 움직이지 않은 시간
+	[SerializeField] private float currentIdleTime;                         // 움직이지 않은 시간
 
-
+	[Space(10)]
+	[Header("이벤트")]
+	[SerializeField] private UnityEvent gameclear;
+	[SerializeField] private UnityEvent gameover;
 
 	// 컴포넌트
 	private Rigidbody _rigidbody;
@@ -126,7 +128,7 @@ public class PlayerController : MonoBehaviour
 			playerInputCheck();
 		}
       
-        transform.position += currentSpeed * transform.forward * time * accelBlock;
+        transform.position += currentSpeed * transform.forward * time * accelBlock * GameManager.Instance.GameSpeed;
 
 
 
@@ -278,7 +280,7 @@ public class PlayerController : MonoBehaviour
 
 	private void ModelRotation()
 	{
-		angle -= currentSpeed * Time.fixedDeltaTime * 190f;
+		angle -= currentSpeed * Time.fixedDeltaTime * 190f * GameManager.Instance.GameSpeed;
 		model.transform.localEulerAngles = new Vector3(0,
 												angle,
 												-90);
@@ -318,8 +320,42 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	public void GameStop()
+	public void OutCheck()
 	{
+		if(transform.position.y < -5)
+		{
+			GameOver();
+		}
+	}
 
+
+
+	public void GameClear()
+	{
+		gameclear.Invoke();
+
+		Debug.Log("게임 클리어");
+	}
+
+
+	public void GameOver()
+	{
+		// 이벤트 실행
+		gameover.Invoke();
+
+		Debug.Log("게임 오버");
+	}
+
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.CompareTag("Trap"))
+		{
+			GameOver();
+		}
+		else if(other.CompareTag("WayPoint"))
+		{
+			GameClear();
+		}
 	}
 }

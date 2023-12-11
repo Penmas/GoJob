@@ -21,8 +21,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	private float gameSpeed = 1;
-
+	[SerializeField] private float gameSpeed = 1;
 
 	public float GameSpeed
 	{
