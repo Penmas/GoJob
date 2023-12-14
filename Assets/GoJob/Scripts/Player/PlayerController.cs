@@ -388,6 +388,9 @@ public class PlayerController : MonoBehaviour
 		_rigidbody.velocity = Vector3.zero;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_rigidbody.angularDrag = 0;
+
+		// 게이지 초기화
+		currentIdleTime = 0;
 	}
 
 
