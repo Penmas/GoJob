@@ -5,6 +5,9 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+	[SerializeField] private bool isTitle;
+
+	[Space(10)]
 	[Header("능력치")]
 	[SerializeField] private Vector3 respawnPosition;
 	[SerializeField] private float maxSpeed;                                // 플레이어 최고 속도
@@ -30,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
 	// 컴포넌트
 	private Rigidbody _rigidbody;
-
+	private StageFunction stageFunction;
 
 	// 수치
 	private float defaultAngle;
@@ -59,7 +62,7 @@ public class PlayerController : MonoBehaviour
 	private void Awake()
 	{
 		_rigidbody = GetComponent<Rigidbody>();
-
+		stageFunction = FindObjectOfType<StageFunction>();
 		defaultAngle = transform.eulerAngles.y;
 		currentAngle = defaultAngle;
 		accelBlock = 1;
@@ -68,8 +71,18 @@ public class PlayerController : MonoBehaviour
 
 	private void Update()
 	{
+		if(!isTitle)
+		{
+
+			if (stageFunction.UIOn)
+			{
+				return;
+			}
+		}
+
+
 		// 시간
-		currentIdleTime += Time.deltaTime;
+		currentIdleTime += Time.deltaTime * GameManager.Instance.GameSpeed;
 
 		playerDeathTimeCheck();
 		
@@ -82,6 +95,16 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (!isTitle)
+		{
+
+			if (stageFunction.UIOn)
+			{
+				return;
+			}
+		}
+
+
 		// 플레이어 움직임
 		PlayerMove();
 
@@ -111,6 +134,7 @@ public class PlayerController : MonoBehaviour
         // 이동
 		if(xPos != 0)
 		{
+			// 속력제한
 			if (Mathf.Abs(currentSpeed) < maxSpeed)
 			{
 				currentSpeed += xPos * time * acceleration;
@@ -147,7 +171,7 @@ public class PlayerController : MonoBehaviour
 		// 회전
 		if(yPos != 0)
 		{
-			currentAngle += yPos * turnSpeed * time;
+			currentAngle += yPos * turnSpeed * time * GameManager.Instance.GameSpeed;
 
 			if (currentAngle < -180)
 			{
@@ -290,6 +314,7 @@ public class PlayerController : MonoBehaviour
 
 
 
+	// 회전
 	private void ModelRotation()
 	{
 		angle -= currentSpeed * Time.fixedDeltaTime * 190f * GameManager.Instance.GameSpeed;
