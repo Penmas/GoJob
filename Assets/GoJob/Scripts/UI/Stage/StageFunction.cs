@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class StageFunction : MonoBehaviour
 {
@@ -30,6 +31,9 @@ public class StageFunction : MonoBehaviour
 	[SerializeField] private bool autoNextStage;
 	[SerializeField] private string nextStage;
 
+
+	[Space(10)]
+	[SerializeField] private TextMeshProUGUI[] textUIs;
 
 	private bool uIOn;
 
@@ -154,9 +158,10 @@ public class StageFunction : MonoBehaviour
 
 	public void UIOff()
 	{
-		goalUI.SetActive(false);
-		countDownUI.SetActive(false);
-		pauseUI.SetActive(false);
+		for(int i = 0; i < textUIs.Length; i++)
+		{
+			textUIs[i].gameObject.SetActive(false);
+		}
 	}
 
 
