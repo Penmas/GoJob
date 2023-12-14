@@ -5,9 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/GoJob/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/GoJob/Scenes/Title.unity
     guid: 4d4877f4ce5852c48a2ba122fbdab6cd
@@ -15,9 +12,9 @@ EditorBuildSettings:
     path: Assets/GoJob/Scenes/StartCutScene.unity
     guid: 4fa0d5e1018ac6642938c5047204fe74
   - enabled: 1
-    path: Assets/GoJob/Scenes/SausageMap.unity
-    guid: b38a7ea4c9c4bbe419777cb3d56f64c9
-  - enabled: 1
     path: Assets/GoJob/Scenes/Stage.unity
     guid: b88a1d2dd89a63444bbe5bfd71a2f072
+  - enabled: 1
+    path: Assets/GoJob/Scenes/SausageMap.unity
+    guid: b38a7ea4c9c4bbe419777cb3d56f64c9
   m_configObjects: {}
