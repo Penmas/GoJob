@@ -345,6 +345,15 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	public void GameStop()
+	{
+
+	}
+
+	public void GameStart()
+	{
+
+	}
 
 	public void Respawn()
 	{
