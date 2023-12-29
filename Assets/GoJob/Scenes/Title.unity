@@ -325,6 +325,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 939903010, guid: d52585e93e4da474090345837cabdae4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 97488283515938239, guid: d52585e93e4da474090345837cabdae4,
         type: 3}
       propertyPath: m_RootOrder
@@ -385,6 +389,11 @@ PrefabInstance:
       propertyPath: model
       value: 
       objectReference: {fileID: 365919034}
+    - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
+        type: 3}
+      propertyPath: isTitle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6232301084358097460, guid: d52585e93e4da474090345837cabdae4,
         type: 3}
       propertyPath: aliveTime

@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerController : MonoBehaviour
 {
+	[SerializeField] private bool isTitle;
+
+	[Space(10)]
 	[Header("능력치")]
 	[SerializeField] private Vector3 respawnPosition;
 	[SerializeField] private float maxSpeed;                                // 플레이어 최고 속도
@@ -15,7 +19,10 @@ public class PlayerController : MonoBehaviour
 
 	[Space(10)]
 	[Header("모델링")]
-	[SerializeField] private GameObject model;								// 모델링
+	[SerializeField] private GameObject model;                              // 모델링
+	[SerializeField] private GameObject leftModel;
+	[SerializeField] private GameObject rightModel;
+	[SerializeField] private Collider collder;
 
 	[Space(10)]
 	[Header("현재 수치")]
@@ -30,16 +37,18 @@ public class PlayerController : MonoBehaviour
 
 	// 컴포넌트
 	private Rigidbody _rigidbody;
-
+	private StageFunction stageFunction;
 
 	// 수치
 	private float defaultAngle;
+	private Vector3 leftAngleDefault;
+	private Vector3 rightAngleDefault;
 	private float angle;					// 모델링이 움직인 각도
 	private float accelBlock;				// 가속 블록 속도
 
 
-	private bool isForwardMoved;			//앞으로 움직이는지 판단
-
+	private bool isForwardMoved;            //앞으로 움직이는지 판단
+	private bool isGameOver;
 
 	// 프로퍼티 선언
 	public float AccelBlock
@@ -59,17 +68,37 @@ public class PlayerController : MonoBehaviour
 	private void Awake()
 	{
 		_rigidbody = GetComponent<Rigidbody>();
-
+		stageFunction = FindObjectOfType<StageFunction>();
 		defaultAngle = transform.eulerAngles.y;
 		currentAngle = defaultAngle;
 		accelBlock = 1;
+
+
+		leftAngleDefault = leftModel.transform.localEulerAngles;
+		rightAngleDefault = rightModel.transform.localEulerAngles;
+
 	}
 
 
 	private void Update()
 	{
+		if(!isTitle)
+		{
+
+			if (stageFunction.UIOn)
+			{
+				return;
+			}
+		}
+
+
+		if(isGameOver)
+		{
+			return;
+		}
+
 		// 시간
-		currentIdleTime += Time.deltaTime;
+		currentIdleTime += Time.deltaTime * GameManager.Instance.GameSpeed;
 
 		playerDeathTimeCheck();
 		
@@ -82,6 +111,20 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (!isTitle)
+		{
+
+			if (stageFunction.UIOn)
+			{
+				return;
+			}
+		}
+
+		if (isGameOver)
+		{
+			return;
+		}
+
 		// 플레이어 움직임
 		PlayerMove();
 
@@ -111,6 +154,7 @@ public class PlayerController : MonoBehaviour
         // 이동
 		if(xPos != 0)
 		{
+			// 속력제한
 			if (Mathf.Abs(currentSpeed) < maxSpeed)
 			{
 				currentSpeed += xPos * time * acceleration;
@@ -147,7 +191,7 @@ public class PlayerController : MonoBehaviour
 		// 회전
 		if(yPos != 0)
 		{
-			currentAngle += yPos * turnSpeed * time;
+			currentAngle += yPos * turnSpeed * time * GameManager.Instance.GameSpeed;
 
 			if (currentAngle < -180)
 			{
@@ -290,6 +334,7 @@ public class PlayerController : MonoBehaviour
 
 
 
+	// 회전
 	private void ModelRotation()
 	{
 		angle -= currentSpeed * Time.fixedDeltaTime * 190f * GameManager.Instance.GameSpeed;
@@ -357,13 +402,21 @@ public class PlayerController : MonoBehaviour
 
 	public void Respawn()
 	{
-		// 위치 초기화
-		transform.position = respawnPosition;
+
+		// 모델링 초기화
+		collder.enabled = true;
+		leftModel.transform.localPosition = new Vector3(0, -0.25f, 0);
+		leftModel.transform.localEulerAngles = leftAngleDefault;
+		rightModel.transform.localPosition = new Vector3(0, -0.25f, 0);
+		rightModel.transform.localEulerAngles = rightAngleDefault;
+
+
 
 		// 로테이션 초기화
 		angle = 0;
 		currentAngle = defaultAngle;
 		transform.eulerAngles = new Vector3(0, defaultAngle, 90);
+
 
 		// 속도 초기화
 		currentSpeed = 0;
@@ -372,12 +425,61 @@ public class PlayerController : MonoBehaviour
 		_rigidbody.velocity = Vector3.zero;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_rigidbody.angularDrag = 0;
+
+		// 게이지 초기화
+		currentIdleTime = 0;
+
+
+
+		// 위치 초기화
+		transform.position = respawnPosition;
+		isGameOver = false;
+
 	}
+
+
+
+
+	public void GameOverPlayerAnimation()
+	{
+		
+		StartCoroutine("GameOverPlayerAnimationCoroutine");	
+	}
+
+
+	public IEnumerator GameOverPlayerAnimationCoroutine()
+	{
+		float time = 0;
+		collder.enabled = false;
+
+		
+		while (true)
+		{
+			time += Time.deltaTime;
+
+			if (time > 1.5f)
+			{
+				break;
+			}
+			leftModel.transform.localPosition += Vector3.right * Time.deltaTime * -2f;
+			leftModel.transform.localEulerAngles += Vector3.up * Time.deltaTime * 50f;
+			rightModel.transform.localPosition += Vector3.right * Time.deltaTime * 2f;
+			rightModel.transform.localEulerAngles += Vector3.up * Time.deltaTime * -1 * 50f;
+			yield return null;
+		}
+
+
+
+		Respawn();
+	}
+
 
 
 
 	public void GameClear()
 	{
+
+
 		gameclear.Invoke();
 
 		Debug.Log("게임 클리어");
@@ -386,9 +488,15 @@ public class PlayerController : MonoBehaviour
 
 	public void GameOver()
 	{
+
+		if (isGameOver)
+		{
+			return;
+		}
+
 		// 이벤트 실행
 		gameover.Invoke();
-
+		isGameOver = true;
 		Debug.Log("게임 오버");
 	}
 
